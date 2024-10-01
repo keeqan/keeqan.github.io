@@ -65,7 +65,7 @@ function getRandomColor() {
 var shootingStars = [];
 
 // Generate a random number of shooting stars between 3 and 10
-var numStars = Math.floor(Math.random() * 3) + 1; // Random number between 3 and 10
+var numStars = Math.floor(Math.random() * 3) + 6; // Random number between 3 and 10
 
 for (let i = 0; i < numStars; i++) {
     // Create a shooting star with random properties and add it to the array
