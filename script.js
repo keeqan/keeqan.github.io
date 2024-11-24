@@ -1,96 +1,330 @@
-// Get the canvas element and set its dimensions
-var canvas = document.querySelector('canvas');
-canvas.width = window.innerWidth;
-canvas.height = window.innerHeight;
+document.addEventListener('DOMContentLoaded', () => {
+    const modal = document.getElementById('modal');
+    const closeBtn = document.getElementById('close');
+    const submitBtn = document.getElementById('submit-answer');
+    const questionText = document.getElementById('question-text');
+    const answerInput = document.getElementById('answer-input');
+    let hasAnsweredFirstQuestion = false; // Tracks if a question has been answered
+    const messageModal = document.getElementById('message-modal');
+    const messageText = document.getElementById('message-text');
+const messageClose = document.getElementById('message-close');
+    let currentQuestion = {};
+    let score = 0;
 
-// Get the 2D rendering context
-var c = canvas.getContext('2d');
+    // Select a random Daily Double question
+    const questionButtons = document.querySelectorAll('.question');
+    const dailyDoubleButton = questionButtons[Math.floor(Math.random() * questionButtons.length)];
+    dailyDoubleButton.classList.add('daily-double');
 
-// Constructor for ShootingStar objects
-function ShootingStar(x, y, dx, dy, radius, color) {
-    this.x = x;
-    this.y = y;
-    this.dx = dx;
-    this.dy = dy;
-    this.radius = radius;
-    this.originalColor = color; // Store the original color
-    this.color = color; // Current color
 
-    // Draw the shooting star
-    this.draw = function() {
-        c.beginPath();
-        c.arc(this.x, this.y, this.radius, 0, Math.PI * 2, true);
-        c.closePath();
-        c.fillStyle = this.color;
-        c.fill();
-    };
-
-    // Update the shooting star's position and reset if it goes off-screen
-    this.update = function() {
-        this.x += this.dx;
-        this.y += this.dy;
-
-        // Check for screen boundaries and reset if necessary
-        if (this.x + this.radius < 0 || this.x - this.radius > canvas.width ||
-            this.y + this.radius < 0 || this.y - this.radius > canvas.height) {
-            this.reset();
-        } else {
-            this.draw();
+    // Sample question set
+    const questions = [
+        // Category 1: Lighthouses of the Great Lakes
+        {
+            category: 'Lighthouses of the Great Lakes',
+            points: 100,
+            question: 'Michigan is home to this many different lighthouses, more than any other state.',
+            answer: '129'
+        },
+        {
+            category: 'Lighthouses of the Great Lakes',
+            points: 200,
+            question: 'This Michigan landmark is situated on 99 acres of township parkland.',
+            answer: 'Presque Isle'
+        },
+        {
+            category: 'Lighthouses of the Great Lakes',
+            points: 300,
+            question: 'This iconic Michigan landmark is considered the most photographed in the Midwest.',
+            answer: 'Grand Haven'
+        },
+        {
+            category: 'Lighthouses of the Great Lakes',
+            points: 400,
+            question: 'The first one was destroyed and was rebuilt further inland.',
+            answer: 'Tawas Point'
+        },
+        {
+            category: 'Lighthouses of the Great Lakes',
+            points: 500,
+            question: '“The loneliest place in North America.”',
+            answer: 'Stannard Rock'
+        },
+        
+        // Category 2: Counties of the Mitten State
+        {
+            category: 'Counties of the Mitten State',
+            points: 100,
+            question: 'The only county to border two other states.',
+            answer: 'Hillsdale'
+        },
+        {
+            category: 'Counties of the Mitten State',
+            points: 200,
+            question: 'The most northern county, which also happens to be a peninsula.',
+            answer: 'Keweenaw'
+        },
+        {
+            category: 'Counties of the Mitten State',
+            points: 300,
+            question: 'Eastern Michigan and the University of Michigan are located here.',
+            answer: 'Washtenaw'
+        },
+        {
+            category: 'Counties of the Mitten State',
+            points: 400,
+            question: 'At the very tip of a thumbs up.',
+            answer: 'Huron'
+        },
+        {
+            category: 'Counties of the Mitten State',
+            points: 500,
+            question: 'Shares a name with a Supernatural character.',
+            answer: 'Cass'
+        },
+        
+        // Category 3: Fascinating Facts from Michigan
+        {
+            category: 'Fascinating Facts from Michigan',
+            points: 100,
+            question: 'Michigan’s only “King” lived here.',
+            answer: 'Beaver Island'
+        },
+        {
+            category: 'Fascinating Facts from Michigan',
+            points: 200,
+            question: 'Michigan has the 2nd most of these in the country.',
+            answer: 'Ski Resorts'
+        },
+        {
+            category: 'Fascinating Facts from Michigan',
+            points: 300,
+            question: 'Lions, Tigers, Pistons Oh My! Name the missing professional sports team.',
+            answer: 'Red Wings'
+        },
+        {
+            category: 'Fascinating Facts from Michigan',
+            points: 400,
+            question: 'Michigan is home to this first all-inclusive playground.',
+            answer: 'Play Michigan'
+        },
+        {
+            category: 'Fascinating Facts from Michigan',
+            points: 500,
+            question: 'This Michigan University has its historic district.',
+            answer: 'Eastern Michigan University'
+        },
+        
+        // Category 4: Michigan’s Metropolitan Marvels
+        {
+            category: 'Michigan’s Metropolitan Marvels',
+            points: 100,
+            question: 'Earl Young built his mushroom houses here.',
+            answer: 'Charlevoix'
+        },
+        {
+            category: 'Michigan’s Metropolitan Marvels',
+            points: 200,
+            question: 'Home to the Cherry Republic and many wineries.',
+            answer: 'Traverse City'
+        },
+        {
+            category: 'Michigan’s Metropolitan Marvels',
+            points: 300,
+            question: 'These three cities are nicknamed the “Tri-Cities”.',
+            answer: 'Saginaw, Bay City, and Midland'
+        },
+        {
+            category: 'Michigan’s Metropolitan Marvels',
+            points: 400,
+            question: 'Home to the only functioning Dutch Windmill, De Zwaan.',
+            answer: 'Holland'
+        },
+        {
+            category: 'Michigan’s Metropolitan Marvels',
+            points: 500,
+            question: 'Formerly known as Furniture City, now nicknamed Beer City.',
+            answer: 'Grand Rapids'
+        },
+        
+        // Category 5: The Great Lakes and Beyond
+        {
+            category: 'The Great Lakes and Beyond',
+            points: 100,
+            question: 'This chain of lakes and rivers is over 75 miles long.',
+            answer: 'Elk River Chain of Lakes'
+        },
+        {
+            category: 'The Great Lakes and Beyond',
+            points: 200,
+            question: 'This lake is Michigan’s longest lake.',
+            answer: 'Torch Lake'
+        },
+        {
+            category: 'The Great Lakes and Beyond',
+            points: 300,
+            question: 'This river holds the title of Michigan’s longest river at 252 miles long.',
+            answer: 'Grand River'
+        },
+        {
+            category: 'The Great Lakes and Beyond',
+            points: 400,
+            question: 'Isle Royale resides in this Michigan Great Lake.',
+            answer: 'Lake Superior'
+        },
+        {
+            category: 'The Great Lakes and Beyond',
+            points: 500,
+            question: 'Traverse City is home to these two limb-named bays.',
+            answer: 'East and West Arm Grand Traverse Bay'
+        },
+        
+        // Final Jeopardy
+        {
+            category: 'Final Jeopardy',
+            points: 0,
+            question: 'Michigan shares its border with this state nicknamed the armpit of America or the worst state ever.',
+            answer: 'Ohio'
         }
-    };
+    ];
 
-    // Reset the shooting star's position and properties
-    this.reset = function() {
-        this.x = Math.random() * canvas.width;
-        this.y = Math.random() * canvas.height;
-        this.dx = (Math.random() - 0.5) * 10;
-        this.dy = (Math.random() - 0.5) * 10;
-        this.radius = (Math.random() * 2) + 1;
-        // Retain the original color when resetting
-        this.color = this.originalColor; 
-    };
-}
+    document.getElementById('increase-score').addEventListener('click', () => {
+        score += 100;
+        updateScore();
+    });
+    
+    document.getElementById('decrease-score').addEventListener('click', () => {
+        score -= 100;
+        updateScore();
+    });
+    
 
-// Function to generate a random color
-function getRandomColor() {
-    const letters = '0123456789ABCDEF';
-    let color = '#';
-    for (let i = 0; i < 6; i++) {
-        color += letters[Math.floor(Math.random() * 16)];
+    document.getElementById('final-jeopardy').addEventListener('click', () => {
+        currentQuestion = questions.find(q => q.category === 'Final Jeopardy');
+        questionText.textContent = currentQuestion.question;
+        modal.style.display = 'flex';
+    });
+    
+    
+    
+        
+
+    questionButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            if (button.classList.contains('hidden-question')) return; // Skip if already answered
+    
+            // Handle Daily Double before any question has been answered
+            if (button.classList.contains('daily-double') && !hasAnsweredFirstQuestion) {
+              //  alert("You must answer at least one question before attempting the Daily Double! Reassigning...");
+    
+                // Remove Daily Double class from the current button
+                button.classList.remove('daily-double');
+    
+                // Find a new question to assign as the Daily Double
+                const availableQuestions = Array.from(questionButtons).filter(btn => 
+                    !btn.classList.contains('hidden-question') && 
+                    btn !== button // Exclude the current button
+                );
+    
+                if (availableQuestions.length > 0) {
+                    const newDailyDouble = availableQuestions[Math.floor(Math.random() * availableQuestions.length)];
+                    newDailyDouble.classList.add('daily-double');
+                   // alert("A new Daily Double has been assigned!");
+                }
+    
+                return; // Stop further processing of the current click
+            }
+    
+            const points = parseInt(button.getAttribute('data-points'), 10);
+            const categoryIndex = parseInt(button.getAttribute('data-category'), 10);
+            currentQuestion = questions.find(q => 
+                q.points === points && 
+                q.category === document.querySelectorAll('.category h2')[categoryIndex - 1].textContent
+            );
+    
+            if (currentQuestion) {
+                if (button.classList.contains('daily-double')) {
+                    // Check if the player has a negative score
+                    let maxWager = score > 0 ? score : 0; // If the score is negative, max wager is $0
+                    
+                    // If the score is negative, reassign the Daily Double immediately
+                    if (maxWager === 0) {
+                        // alert("You cannot make a wager with a negative score. Reassigning Daily Double...");
+                        // Remove Daily Double class from the current button
+                        button.classList.remove('daily-double');
+                        // Find a new question to assign as the Daily Double
+                        const availableQuestions = Array.from(questionButtons).filter(btn => 
+                            !btn.classList.contains('hidden-question') && 
+                            btn !== button // Exclude the current button
+                        );
+    
+                        if (availableQuestions.length > 0) {
+                            const newDailyDouble = availableQuestions[Math.floor(Math.random() * availableQuestions.length)];
+                            newDailyDouble.classList.add('daily-double');
+                          //  alert("A new Daily Double has been assigned!");
+                        }
+    
+                        return; // Prevent further processing of the current click
+                    }
+    
+                    const wager = prompt(`Daily Double! Enter your wager ):`);
+    
+                    // Ensure the wager is a valid number and within the allowed range
+                    if (wager !== null) {
+                        const wagerValue = parseInt(wager, 10);
+                        if (!isNaN(wagerValue) && wagerValue > 0 && wagerValue <= maxWager) {
+                            currentQuestion.points = wagerValue; // Set the wager
+                        } else {
+                            return; // alert(`Invalid wager! It must be a positive number no greater than ${maxWager}.`);
+                        }
+                    } else {
+                        return; // Prevent opening the question if the wager is canceled
+                    }
+                }
+    
+                questionText.textContent = currentQuestion.question;
+                modal.style.display = 'flex';
+                button.classList.add('hidden-question'); // Mark the question as answered
+                hasAnsweredFirstQuestion = true; // Set flag to true after answering
+            }
+        });
+    });
+    
+    
+    
+    
+    
+    
+    
+    
+    submitBtn.addEventListener('click', () => {
+        const userAnswer = answerInput.value.trim().toLowerCase();
+        if (userAnswer) {
+            if (userAnswer === currentQuestion.answer.toLowerCase()) {
+                alert('Correct!');
+                score += currentQuestion.points;
+            } else {
+                alert(`Incorrect! The correct answer was: ${currentQuestion.answer}`);
+                score -= currentQuestion.points; // Optional penalty for incorrect answers
+            }
+            updateScore();
+            modal.style.display = 'none';
+            answerInput.value = '';
+        }
+    });
+
+    closeBtn.addEventListener('click', () => {
+        modal.style.display = 'none';
+    });
+
+    window.addEventListener('click', (event) => {
+        if (event.target === modal) {
+            modal.style.display = 'none';
+        }
+    });
+
+    function updateScore() {
+        let scoreElement = document.getElementById('score');
+        scoreElement.textContent = `Score: ${score}`;
     }
-    return color;
-}
-
-// Create an array to hold the shooting stars
-var shootingStars = [];
-
-// Generate a random number of shooting stars between 3 and 10
-var numStars = Math.floor(Math.random() * 3) + 6; // Random number between 3 and 10
-
-for (let i = 0; i < numStars; i++) {
-    // Create a shooting star with random properties and add it to the array
-    const initialColor = getRandomColor(); // Get a random color once
-    shootingStars.push(new ShootingStar(
-        Math.random() * canvas.width,
-        Math.random() * canvas.height,
-        (Math.random() - 0.5) * 10,
-        (Math.random() - 0.5) * 10,
-        (Math.random() * 2) + 1,
-        initialColor // Use the random color
-    ));
-}
-
-// Animate the canvas
-function animate() {
-    requestAnimationFrame(animate);
-
-    // Clear the canvas with a translucent rectangle
-    c.fillStyle = 'rgba(11, 21, 56, 0.3)';
-    c.fillRect(0, 0, canvas.width, canvas.height);
-
-    // Update and draw each shooting star
-    shootingStars.forEach(star => star.update());
-}
-
-// Start the animation
-animate();
+});
