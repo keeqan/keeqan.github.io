@@ -2,12 +2,83 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Starry Background</title>
+    <title>Jeopardy Game</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <canvas></canvas>
+    <div class="game-container">
+        <h1> Michigan Jeopardy </h1>
+        <div id="score" class="score">Score: 0</div>
+        <div class="board">
+            <!-- Categories -->
+            <div class="category">
+                <h2>Lighthouses of the Great Lakes</h2>
+                <button class="question" data-category="1" data-points="100">100</button>
+                <button class="question" data-category="1" data-points="200">200</button>
+                <button class="question" data-category="1" data-points="300">300</button>
+                <button class="question" data-category="1" data-points="400">400</button>
+                <button class="question" data-category="1" data-points="500">500</button>
+            </div>
+            <div class="category">
+                <h2>Counties of the Mitten State</h2>
+                <button class="question" data-category="2" data-points="100">100</button>
+                <button class="question" data-category="2" data-points="200">200</button>
+                <button class="question" data-category="2" data-points="300">300</button>
+                <button class="question" data-category="2" data-points="400">400</button>
+                <button class="question" data-category="2" data-points="500">500</button>
+            </div>
+            <div class="category">
+                <h2>Fascinating Facts from Michigan</h2>
+                <button class="question" data-category="3" data-points="100">100</button>
+                <button class="question" data-category="3" data-points="200">200</button>
+                <button class="question" data-category="3" data-points="300">300</button>
+                <button class="question" data-category="3" data-points="400">400</button>
+                <button class="question" data-category="3" data-points="500">500</button>
+            </div>
+            <div class="category">
+                <h2>Michigan’s Metropolitan Marvels</h2>
+                <button class="question" data-category="4" data-points="100">100</button>
+                <button class="question" data-category="4" data-points="200">200</button>
+                <button class="question" data-category="4" data-points="300">300</button>
+                <button class="question" data-category="4" data-points="400">400</button>
+                <button class="question" data-category="4" data-points="500">500</button>
+            </div>
+            <div class="category">
+                <h2>The Great Lakes and Beyond</h2>
+                <button class="question" data-category="5" data-points="100">100</button>
+                <button class="question" data-category="5" data-points="200">200</button>
+                <button class="question" data-category="5" data-points="300">300</button>
+                <button class="question" data-category="5" data-points="400">400</button>
+                <button class="question" data-category="5" data-points="500">500</button>
+            </div>
+            <!-- Repeat .category for more categories -->
+        </div>
+        <div id="modal" class="modal">
+            <div class="modal-content">
+                <span id="close" class="close">&times;</span>
+                <p id="question-text">Question goes here</p>
+                <input type="text" id="answer-input" placeholder="Your answer...">
+                <button id="submit-answer" class="submit-btn">Submit</button>
+            </div>
+        </div>
+
+             <!-- Score Changer -->
+        <div class="score-adjustment">
+            <button id="increase-score" class="submit-btn">+100</button>
+            <button id="decrease-score" class="submit-btn">-100</button>
+        </div>
+
+
+        
+    </div>
+     <!-- Final Jeopardy -->
+    <button id="final-jeopardy" class="submit-btn">Final Jeopardy</button>
+
+  
+
+    <link rel="stylesheet" href="style.css">
     <script src="script.js"></script>
 </body>
 </html>
