@@ -1,14 +1,138 @@
-html, body {
+body {
+    font-family: 'Trebuchet MS', sans-serif;
+    background-color: #0d1b2a;
+    color: #ffffff;
+    text-align: center;
     margin: 0;
     padding: 0;
-    width: 100%;
-    height: 100%;
 }
 
-canvas {
-    position: absolute; /* Positions canvas relative to the viewport */
+h1 {
+    font-size: 2.5em;
+    margin: 20px;
+    color: #e63946;
+}
+
+.score {
+    font-size: 1.5em;
+    margin-bottom: 20px;
+    color: #f1faee;
+    font-weight: bold;
+}
+
+.game-container {
+    margin: 0 auto;
+    max-width: 1200px;
+    padding: 20px;
+}
+
+.board {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 10px;
+}
+
+.category {
+    border: 2px solid #1d3557;
+    background-color: #457b9d;
+    color: #f1faee;
+    text-align: center;
+}
+
+.category h2 {
+    background-color: #1d3557;
+    margin: 0;
+    padding: 10px;
+    font-size: 1.5em;
+    border-bottom: 2px solid #457b9d;
+}
+
+.question {
+    display: block;
+    width: 100%;
+    padding: 20px 0;
+    background-color: #a8dadc;
+    border: none;
+    font-size: 1.5em;
+    cursor: pointer;
+    color: #1d3557;
+    transition: background-color 0.3s;
+}
+
+.question:hover {
+    background-color: #e63946;
+    color: #ffffff;
+}
+
+.modal {
+    display: none;
+    position: fixed;
     top: 0;
     left: 0;
-    width: 100%; /* Full width */
-    height: 100%; /* Full height */
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.8);
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-content {
+    background-color: #f1faee;
+    color: #1d3557;
+    font-size: 4em;
+    padding: 20px;
+    border-radius: 10px;
+    width: 90%;
+}
+
+.close {
+    float: right;
+    cursor: pointer;
+    font-size: 1.5em;
+    color: #e63946;
+}
+
+input[type="text"] {
+    width: 100%;
+    padding: 10px;
+    margin: 15px 0;
+    font-size: 1em;
+    border-radius: 5px;
+    border: 2px solid #1d3557;
+}
+
+.submit-btn {
+    background-color: #457b9d;
+    color: #f1faee;
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+    border-radius: 5px;
+    font-size: 1em;
+}
+.hidden-question {
+    visibility: hidden;
+}
+
+.daily-double {
+    background-color: #000000;
+  /*  background-color: #a8dadc; */
+     color: #000;
+}
+
+
+
+.submit-btn:hover {
+    background-color: #1d3557;
+}
+
+
+#message-modal .modal-content {
+    text-align: center;
+    font-size: 1.5em;
+    color: #1d3557;
+}
+#message-modal .close {
+    font-size: 1.2em;
+    cursor: pointer;
 }
