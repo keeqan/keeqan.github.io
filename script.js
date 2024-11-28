@@ -4,10 +4,16 @@ document.addEventListener('DOMContentLoaded', () => {
     const submitBtn = document.getElementById('submit-answer');
     const questionText = document.getElementById('question-text');
     const answerInput = document.getElementById('answer-input');
+    const feedback = document.createElement('div'); // Add a feedback box
+    feedback.id = 'feedback';
+    feedback.classList.add('feedback', 'hidden'); // Initially hidden
+    modal.querySelector('.modal-content').appendChild(feedback);
+
+
     let hasAnsweredFirstQuestion = false; // Tracks if a question has been answered
     const messageModal = document.getElementById('message-modal');
     const messageText = document.getElementById('message-text');
-const messageClose = document.getElementById('message-close');
+    const messageClose = document.getElementById('message-close');
     let currentQuestion = {};
     let score = 0;
 
@@ -200,6 +206,10 @@ const messageClose = document.getElementById('message-close');
     
 
     document.getElementById('final-jeopardy').addEventListener('click', () => {
+        // Reset feedback when opening Final Jeopardy
+        feedback.classList.add('hidden');
+        feedback.textContent = ''; // Clear any previous feedback
+
         currentQuestion = questions.find(q => q.category === 'Final Jeopardy');
         questionText.textContent = currentQuestion.question;
         modal.style.display = 'flex';
@@ -212,6 +222,8 @@ const messageClose = document.getElementById('message-close');
     questionButtons.forEach(button => {
         button.addEventListener('click', () => {
             if (button.classList.contains('hidden-question')) return; // Skip if already answered
+            feedback.classList.add('hidden');
+            feedback.textContent = ''; // Clear any previous feedback
     
             // Handle Daily Double before any question has been answered
             if (button.classList.contains('daily-double') && !hasAnsweredFirstQuestion) {
@@ -245,29 +257,8 @@ const messageClose = document.getElementById('message-close');
             if (currentQuestion) {
                 if (button.classList.contains('daily-double')) {
                     // Check if the player has a negative score
-                    let maxWager = score > 0 ? score : 0; // If the score is negative, max wager is $0
-                    
-                    // If the score is negative, reassign the Daily Double immediately
-                    if (maxWager === 0) {
-                        // alert("You cannot make a wager with a negative score. Reassigning Daily Double...");
-                        // Remove Daily Double class from the current button
-                        button.classList.remove('daily-double');
-                        // Find a new question to assign as the Daily Double
-                        const availableQuestions = Array.from(questionButtons).filter(btn => 
-                            !btn.classList.contains('hidden-question') && 
-                            btn !== button // Exclude the current button
-                        );
-    
-                        if (availableQuestions.length > 0) {
-                            const newDailyDouble = availableQuestions[Math.floor(Math.random() * availableQuestions.length)];
-                            newDailyDouble.classList.add('daily-double');
-                          //  alert("A new Daily Double has been assigned!");
-                        }
-    
-                        return; // Prevent further processing of the current click
-                    }
-    
-                    const wager = prompt(`Daily Double! Enter your wager ):`);
+                    let maxWager = score >= 500 ? score : 500; // Wager capped at 500 if score is lower
+                    const wager = prompt(`Daily Double! Enter your wager! `);
     
                     // Ensure the wager is a valid number and within the allowed range
                     if (wager !== null) {
@@ -299,18 +290,27 @@ const messageClose = document.getElementById('message-close');
     
     submitBtn.addEventListener('click', () => {
         const userAnswer = answerInput.value.trim().toLowerCase();
+        const resultText = document.getElementById('result-text'); // Ensure you have a result message container
+
+        // Clear any previous result message
+        if (resultText) {
+            resultText.textContent = '';
+        }
         if (userAnswer) {
             if (userAnswer === currentQuestion.answer.toLowerCase()) {
-                alert('Correct!');
+                feedback.textContent = 'Correct! Well done!';
+                feedback.style.backgroundColor = '#0c3d91'; // Light blue for correct
                 score += currentQuestion.points;
             } else {
-                alert(`Incorrect! The correct answer was: ${currentQuestion.answer}`);
-                score -= currentQuestion.points; // Optional penalty for incorrect answers
+                feedback.textContent = `Incorrect! The correct answer was: ${currentQuestion.answer}`;
+                feedback.style.backgroundColor = 'red'; // Red for incorrect
+                score -= currentQuestion.points;
             }
+            feedback.classList.remove('hidden'); // Show feedback
             updateScore();
-            modal.style.display = 'none';
-            answerInput.value = '';
         }
+        answerInput.value = ''; // Clear the answer input
+
     });
 
     closeBtn.addEventListener('click', () => {
