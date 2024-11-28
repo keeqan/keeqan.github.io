@@ -59,10 +59,12 @@
             <div class="modal-content">
                 <span id="close" class="close">&times;</span>
                 <p id="question-text">Question goes here</p>
+                <div id="result-text"></div> <!-- Result message will appear here -->
                 <input type="text" id="answer-input" placeholder="Your answer...">
                 <button id="submit-answer" class="submit-btn">Submit</button>
             </div>
         </div>
+        
 
              <!-- Score Changer -->
         <div class="score-adjustment">
@@ -75,6 +77,15 @@
     </div>
      <!-- Final Jeopardy -->
     <button id="final-jeopardy" class="submit-btn">Final Jeopardy</button>
+
+    <div id="message-modal" class="modal">
+        <div class="modal-content">
+            <span id="message-close" class="close">&times;</span>
+            <p id="message-text"></p>
+            <button id="message-submit" class="submit-btn">Close</button>
+        </div>
+    </div>
+    
 
   
 
