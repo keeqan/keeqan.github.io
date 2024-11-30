@@ -78,6 +78,7 @@ h1 {
 
 .modal {
     display: none;
+    width: 90%; /* Shrink modal width */
     position: fixed;
     font-size: 4.5rem;
     top: 50%;
